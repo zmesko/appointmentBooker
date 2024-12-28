@@ -96,6 +96,20 @@
     margin: 5px;
   }
 
+  .busynessDiv {
+    width: 0%;
+    background-color: red;
+    height: 5px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    border: none;
+    pointer-events:none;
+  }
+
   button:disabled {
   border: 1px solid #ee2f2f;
   background-color: #908f8f;
