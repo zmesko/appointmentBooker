@@ -75,7 +75,6 @@ function openModal(date) {
         fetchData()
         .then(events => {
             appointmentThisTime = events.find(e => e.bookedAppointment === buttonAppointment.id + ":00");
-            console.log(appointmentThisTime);
             if (appointmentThisTime) {
               buttonAppointment.disabled = true;
             }
@@ -131,15 +130,21 @@ function load() {
     if (i > paddingDays) {
       daySquare.innerText = i - paddingDays;
       let eventForDay;
+
       fetchData()
       .then(events => {
-            eventForDay = events.find(e => e.bookedAppointment.split('T')[0] === dayString);
-            if (eventForDay) {
-                const eventDiv = document.createElement('div');
-                eventDiv.classList.add('event');
-                eventDiv.innerText = eventForDay.name;
-                daySquare.appendChild(eventDiv);
+            dayBusyness = events.filter(e => e.bookedAppointment.split('T')[0] === dayString);
+            
+            let busynessDiv = document.createElement('div');
+            busynessDiv.classList.add('busynessDiv');
+            daySquare.appendChild(busynessDiv);
+
+            let busynessPercent = 0;
+
+            for(let i = 0; i < dayBusyness.length; i++) {
+              busynessPercent += 5;
             }
+            busynessDiv.style.width = busynessPercent + "%";
         });
       if (i - paddingDays === day && nav === 0) {
         daySquare.id = 'currentDay';
@@ -167,7 +172,6 @@ function closeModal() {
 }
 
 function saveEvent(bookedAppointment) {
-  console.log(bookedAppointment);
   if (nameInput.value && emailInput.value) {
     nameInput.classList.remove('error');
 
