@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <title>Appointment booker (admin)</title>
+
+    <link href="admin.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="container">
+      <h1>Admin</h1>
+        <div id="header">
+          <div id="monthDisplay"></div>
+          <div>
+            <button id="backButton">Back</button>
+            <button id="nextButton">Next</button>
+          </div>
+        </div>
+        
+        <div id="weekdays">
+            <div>Hétfő</div>
+            <div>Kedd</div>
+            <div>Szerda</div>
+            <div>Csütörtök</div>
+            <div>Péntek</div>
+            <div>Szombat</div>
+            <div>Vasárnap</div>
+        </div>
+        
+        <div id="calendar"></div>
+    </div>
+
+    <div id="newEventModal">
+        <h2>Időpontfoglalás</h2>
+  
+        <input id="nameInput" placeholder="Add meg a neved" />
+        <input type="email" id="emailInput" placeholder="Add meg az email címed" required/>
+        <div id="buttonsPlace"></div>
+  
+        <button id="cancelButton">Cancel</button>
+    </div>
+  
+
+    <div id="modalBackDrop"></div>
+
+    <script src="admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+  </body>
+</html>
