@@ -66,6 +66,12 @@
     color: #666666;
   }
 
+  .dayDisabled {
+    pointer-events: none;
+    background-color: #908f8f
+  }
+
+
   .busynessDiv {
     width: 100%;
     background-color: white;
