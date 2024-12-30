@@ -70,7 +70,7 @@ function openModal(date) {
             buttonAppointment.id = date + "T" + appointment + ":30";
             appointment++;
         }
-
+        
         let appointmentThisTime;
         fetchData()
         .then(events => {
@@ -128,23 +128,41 @@ function load() {
 
 
     if (i > paddingDays) {
+
       daySquare.innerText = i - paddingDays;
-      let eventForDay;
 
       fetchData()
       .then(events => {
             dayBusyness = events.filter(e => e.bookedAppointment.split('T')[0] === dayString);
-            
+
+            let positionInLine = [];
+            for(let i = 0; i < dayBusyness.length; i++) {
+              let position = dayBusyness[i].bookedAppointment.split('T')[1].split(':')[0];
+              positionInLine.push(19 - position - position);
+              if(dayBusyness[i].bookedAppointment.split('T')[1].split(':')[1] > 0) {
+                positionInLine[i]--;
+              }
+            }
+
+
+
             let busynessDiv = document.createElement('div');
             busynessDiv.classList.add('busynessDiv');
             daySquare.appendChild(busynessDiv);
 
-            let busynessPercent = 0;
-
-            for(let i = 0; i < dayBusyness.length; i++) {
-              busynessPercent += 5;
+            for(let i = 3; i > -16; i--) {
+              if(positionInLine.find(p => p === i)) {
+                let divTest = document.createElement('div');
+                divTest.classList.add('testDiv');
+                divTest.style.width = "5px";
+                busynessDiv.appendChild(divTest);
+              }else {
+                let divTest = document.createElement('div');
+                divTest.style.width = "5px";
+                busynessDiv.appendChild(divTest);
+              }
             }
-            busynessDiv.style.width = busynessPercent + "%";
+            
         });
       if (i - paddingDays === day && nav === 0) {
         daySquare.id = 'currentDay';
