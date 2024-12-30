@@ -171,6 +171,20 @@ function load() {
       }
 
       daySquare.addEventListener('click', () => openModal(dayString));
+
+        dayStringToDate = new Date(dayString);
+        let checkSunday = dayStringToDate.toLocaleDateString('hu', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        });
+
+        if(checkSunday.split(', ')[1] === "vasárnap") {
+          daySquare.classList.add('dayDisabled');
+        }
+        
+
     } else {
       daySquare.classList.add('padding');
     }

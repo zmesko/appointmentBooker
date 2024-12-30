@@ -120,6 +120,11 @@
   color: #666666;
   }
 
+  .dayDisabled {
+    pointer-events: none;
+    background-color: #908f8f
+  }
+
   #newEventModal, #deleteEventModal {
     display: none;
     z-index: 20;
