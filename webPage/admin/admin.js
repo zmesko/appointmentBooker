@@ -36,7 +36,6 @@ fetchData()
 
 const calendar = document.getElementById('calendar');
 const newEventModal = document.getElementById('newEventModal');
-const deleteEventModal = document.getElementById('deleteEventModal');
 const backDrop = document.getElementById('modalBackDrop');
 const nameInput = document.getElementById('nameInput');
 const emailInput = document.getElementById('emailInput');
@@ -183,7 +182,6 @@ function load() {
 function closeModal() {
   nameInput.classList.remove('error');
   newEventModal.style.display = 'none';
-  //deleteEventModal.style.display = 'none';
   modalBackDrop.style.display = 'none';
   nameInput.value = '';
   emailInput.value ='';
@@ -246,13 +244,7 @@ function deleteEvent(bookedAppointment) {
   });
     closeModal();
 }
-/*
-function deleteEvent() {
-  events = events.filter(e => e.date !== clicked);
-  localStorage.setItem('events', JSON.stringify(events));
-  closeModal();
-}
-*/
+
 function initButtons() {
   document.getElementById('nextButton').addEventListener('click', () => {
     nav++;
@@ -264,10 +256,7 @@ function initButtons() {
     load();
   });
 
-  //document.getElementById('saveButton').addEventListener('click', saveEvent);
   document.getElementById('cancelButton').addEventListener('click', closeModal);
-  //document.getElementById('deleteButton').addEventListener('click', deleteEvent);
-  //document.getElementById('closeButton').addEventListener('click', closeModal);
 }
 
 initButtons();
