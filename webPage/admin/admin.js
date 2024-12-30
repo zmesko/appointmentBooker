@@ -76,11 +76,13 @@ function openModal(date) {
         .then(events => {
             appointmentThisTime = events.find(e => e.bookedAppointment === buttonAppointment.id + ":00");
             if (appointmentThisTime) {
-              buttonAppointment.disabled = true;
+              buttonAppointment.classList.add('buttonReserved');
+              buttonAppointment.addEventListener('click', () => deleteEvent(buttonAppointment.id));
+            }else {
+              buttonAppointment.addEventListener('click', () => saveEvent(buttonAppointment.id));
             }
         });
 
-        buttonAppointment.addEventListener('click', () => saveEvent(buttonAppointment.id));
         buttonsPlace.appendChild(buttonAppointment);
     }
   }
@@ -135,6 +137,7 @@ function load() {
       .then(events => {
             dayBusyness = events.filter(e => e.bookedAppointment.split('T')[0] === dayString);
 
+            //number the appointments
             let positionInLine = [];
             for(let i = 0; i < dayBusyness.length; i++) {
               let position = dayBusyness[i].bookedAppointment.split('T')[1].split(':')[0];
@@ -145,7 +148,7 @@ function load() {
             }
 
 
-
+            //show the busyness in a day
             let busynessDiv = document.createElement('div');
             busynessDiv.classList.add('busynessDiv');
             daySquare.appendChild(busynessDiv);
@@ -211,6 +214,37 @@ function saveEvent(bookedAppointment) {
   } else {
     nameInput.classList.add('error');
   }
+}
+
+function deleteEvent(bookedAppointment) {
+
+  let bookedRecord;
+  fetchData()
+    .then(events => {
+      bookedRecord = events.find(e => e.bookedAppointment === bookedAppointment + ":00");
+      console.log(bookedRecord.id);
+
+    fetch("http://localhost:8080/api/appointment/" + bookedRecord.id, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response;
+      })
+      .then(data => {
+          console.log('Resource deleted successfully:', data);
+      })
+      .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+      });
+
+  });
+    closeModal();
 }
 /*
 function deleteEvent() {
