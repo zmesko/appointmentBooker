@@ -18,6 +18,7 @@
   }
 
   .day {
+    position: relative;
     width: 100px;
     padding: 10px;
     height: 100px;
@@ -86,7 +87,7 @@
     pointer-events:none;
   }
 
-  .testDiv {
+  .indicator {
     background-color: red;
   }
 
@@ -100,6 +101,7 @@
   }
   #header button {
     background-color:#92a1d1;
+    width: 100px;
   }
 
   #container {
@@ -120,6 +122,7 @@
   }
 
   #calendar {
+    position: relative;
     width: 100%;
     margin: auto;
     display: flex;
@@ -172,4 +175,12 @@
   }
   #nameInput.error, #emailInput.error {
     border: 2px solid red;
+  }
+
+  #dayDisabledButton {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: auto;
+    background-color: #92a1d1;
   }

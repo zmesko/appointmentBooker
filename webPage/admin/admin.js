@@ -1,8 +1,9 @@
 let nav = 0;
 let clicked = null;
 let events;
+let disabledDays;
 
-//Get request from server
+//get request from server (appointment)
 function fetchData() { 
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -34,11 +35,80 @@ fetchData()
      console.log(events);
      });
 
+//get request from server (disabledday)
+function fetchDataDisabledday() { 
+  return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const apiUrl = 'http://localhost:8080/api/disabledday';
+
+      xhr.open('GET', apiUrl, true);
+
+      xhr.responseType = 'json';
+
+      xhr.onload = function() {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+              resolve(xhr.response);
+              disabledDays = xhr.response;
+          } else {
+              reject('Request failed with status: ' + xhr.status);
+          }
+      };
+
+      xhr.onerror = function() {
+          reject('Request failed');
+      };
+
+      xhr.send();
+  }); 
+}
+
+fetchDataDisabledday()
+    .then(disabledDays => {
+     console.log(disabledDays);
+     });
+
 const calendar = document.getElementById('calendar');
 const newEventModal = document.getElementById('newEventModal');
-const backDrop = document.getElementById('modalBackDrop');
+
+const modalBackDrop = document.getElementById('modalBackDrop');
+modalBackDrop.addEventListener('click', () => closeModal());
+
 const nameInput = document.getElementById('nameInput');
 const emailInput = document.getElementById('emailInput');
+
+const buttonDisabledDay = document.getElementById('dayDisabledButton');
+
+let isButtonClicked = false;
+buttonDisabledDay.addEventListener('click', () => {
+  if(isButtonClicked === false) {
+    localStorage.setItem('buttonDisabledDayClicked', 'true');
+    disabledDayView();
+    isButtonClicked = true;
+  }else {
+    localStorage.setItem('buttonDisabledDayClicked', 'false');
+    isButtonClicked = false;
+  }
+});
+
+function disabledDayView() {
+  modalBackDrop.style.display = 'block';
+  calendar.style.zIndex = '12';
+}
+
+function disabledADay(date) {
+  fetch("http://localhost:8080/api/disabledday", {
+    method: "POST",
+    body: JSON.stringify({
+        name: "admin",
+        disabledDay: date,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  });
+  closeModal();
+}
+
 const weekdays = ['hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat', 'vasárnap'];
 
 function openModal(date) {
@@ -86,7 +156,7 @@ function openModal(date) {
     }
   }
 
-  backDrop.style.display = 'block';
+  modalBackDrop.style.display = 'block';
 }
 
 function load() {
@@ -97,9 +167,8 @@ function load() {
   }
 
   const day = dt.getDate();
-  const month = dt.getMonth();
+  let month = dt.getMonth();
   const year = dt.getFullYear();
-
   const firstDayOfMonth = new Date(year, month, 1);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   
@@ -109,6 +178,13 @@ function load() {
     month: 'numeric',
     day: 'numeric',
   });
+
+  if(month + 1 < 10) {
+    let tempt = month + 1;
+    month = '0' + tempt;
+  }else {
+    month++;
+  }
 
   const paddingDays = weekdays.indexOf(dateString.split(', ')[1]);
 
@@ -125,7 +201,8 @@ function load() {
     if(temptDay < 10) {
         temptDay = '0' + temptDay;
     }
-    const dayString = `${year}-${month + 1}-${temptDay}`;
+ 
+    const dayString = `${year}-${month}-${temptDay}`;
 
 
     if (i > paddingDays) {
@@ -155,7 +232,7 @@ function load() {
             for(let i = 3; i > -16; i--) {
               if(positionInLine.find(p => p === i)) {
                 let divTest = document.createElement('div');
-                divTest.classList.add('testDiv');
+                divTest.classList.add('indicator');
                 divTest.style.width = "5px";
                 busynessDiv.appendChild(divTest);
               }else {
@@ -166,20 +243,39 @@ function load() {
             }
             
         });
+      
+      //set disabled days
+      fetchDataDisabledday()
+      .then(disabledDays => {
+            let isDisabledDay = disabledDays.find(e => e.disabledDay === dayString);
+            if(isDisabledDay) {
+              daySquare.classList.add('dayDisabled');
+            }
+          });
+
       if (i - paddingDays === day && nav === 0) {
         daySquare.id = 'currentDay';
       }
 
-      daySquare.addEventListener('click', () => openModal(dayString));
 
-        dayStringToDate = new Date(dayString);
-        let checkSunday = dayStringToDate.toLocaleDateString('hu', {
+
+      daySquare.addEventListener('click', () => {
+        if(localStorage.getItem('buttonDisabledDayClicked') === 'true') {
+          disabledADay(dayString);
+        }else {
+          openModal(dayString);
+        }
+      });
+
+      //disabled all sunday
+      dayStringToDate = new Date(dayString);
+      let checkSunday = dayStringToDate.toLocaleDateString('hu', {
         weekday: 'long',
         year: 'numeric',
         month: 'numeric',
         day: 'numeric',
-        });
-
+      });
+      
         if(checkSunday.split(', ')[1] === "vasárnap") {
           daySquare.classList.add('dayDisabled');
         }
@@ -188,8 +284,7 @@ function load() {
     } else {
       daySquare.classList.add('padding');
     }
-    
-    calendar.appendChild(daySquare);    
+    calendar.appendChild(daySquare);
   }
 }
 
@@ -201,6 +296,9 @@ function closeModal() {
   emailInput.value ='';
   buttonsPlace.innerText = '';
   clicked = null;
+  calendar.style.zIndex = '0';
+  isButtonClicked = false;
+  localStorage.setItem('buttonDisabledDayClicked', 'false');
   load();
 }
 
@@ -215,7 +313,7 @@ function saveEvent(bookedAppointment) {
             email: emailInput.value,
             mobileNumber: null,
             bookedAppointment: bookedAppointment,
-            approval: false
+            disabledDay: false
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"

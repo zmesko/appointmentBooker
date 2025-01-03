@@ -33,7 +33,13 @@ public class AppointmentContoller {
     //Get last id
     @Bean
     CommandLineRunner commandLineRunner(){
-        return args -> id = repository.findLastId().getId() + 1;
+        return args ->{
+                if (repository.findLastId() == null) {
+                    id = 1;
+                }else {
+                    id = repository.findLastId().getId() + 1;
+                }
+        };
     };
 
     @GetMapping("")
