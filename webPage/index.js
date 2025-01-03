@@ -192,7 +192,7 @@ function load() {
             for(let i = 3; i > -16; i--) {
               if(positionInLine.find(p => p === i)) {
                 let divTest = document.createElement('div');
-                divTest.classList.add('testDiv');
+                divTest.classList.add('indicator');
                 divTest.style.width = "5px";
                 busynessDiv.appendChild(divTest);
               }else {
@@ -212,6 +212,13 @@ function load() {
               daySquare.classList.add('dayDisabled');
             }
           });
+
+      //set previous days disabled
+      let currentDate = new Date();
+      let thisDate = new Date(dayString);
+      if(thisDate < currentDate) {
+        daySquare.classList.add('dayDisabled');
+      }
 
       if (i - paddingDays === day && nav === 0) {
         daySquare.id = 'currentDay';
