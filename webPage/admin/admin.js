@@ -341,27 +341,28 @@ function deleteEvent(bookedAppointment) {
       bookedRecord = events.find(e => e.bookedAppointment === bookedAppointment + ":00");
       console.log(bookedRecord.id);
 
-    fetch("http://localhost:8080/api/appointment/" + bookedRecord.id, {
-      method: "DELETE",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8"
-      }
-    })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          return response;
-      })
-      .then(data => {
-          console.log('Resource deleted successfully:', data);
-      })
-      .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
-      });
-
+    if(confirm("Biztos törölni szeretné?") == true) {
+        fetch("http://localhost:8080/api/appointment/" + bookedRecord.id, {
+            method: "DELETE",
+            headers: {
+              "Content-type": "application/json; charset=UTF-8"
+            }
+          })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response;
+            })
+            .then(data => {
+                console.log('Resource deleted successfully:', data);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+            closeModal();
+    }
   });
-    closeModal();
 }
 
 function initButtons() {
