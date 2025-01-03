@@ -110,11 +110,12 @@
     pointer-events:none;
   }
 
-  .testDiv {
+  .indicator {
     background-color: red;
   }
 
   button:disabled {
+  cursor: default;
   border: 1px solid #ee2f2f;
   background-color: #908f8f;
   color: #666666;

@@ -252,6 +252,13 @@ function load() {
               daySquare.classList.add('dayDisabled');
             }
           });
+      
+      //set previous days disabled
+      let currentDate = new Date();
+      let thisDate = new Date(dayString);
+      if(thisDate < currentDate) {
+        daySquare.classList.add('dayDisabled');
+      }
 
       if (i - paddingDays === day && nav === 0) {
         daySquare.id = 'currentDay';
