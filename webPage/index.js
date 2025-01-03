@@ -1,6 +1,7 @@
 let nav = 0;
 let clicked = null;
 let events;
+let disabledDays;
 
 //Get request from server
 function fetchData() { 
@@ -29,10 +30,42 @@ function fetchData() {
     }); 
 }
 
+//get request from server (disabledday)
 fetchData()
     .then(events => {
      console.log(events);
      });
+
+     function fetchDataDisabledday() { 
+      return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          const apiUrl = 'http://localhost:8080/api/disabledday';
+    
+          xhr.open('GET', apiUrl, true);
+    
+          xhr.responseType = 'json';
+    
+          xhr.onload = function() {
+              if (xhr.readyState == 4 && xhr.status == 200) {
+                  resolve(xhr.response);
+                  disabledDays = xhr.response;
+              } else {
+                  reject('Request failed with status: ' + xhr.status);
+              }
+          };
+    
+          xhr.onerror = function() {
+              reject('Request failed');
+          };
+    
+          xhr.send();
+      }); 
+    }
+    
+  fetchDataDisabledday()
+      .then(disabledDays => {
+       console.log(disabledDays);
+        });
 
 const calendar = document.getElementById('calendar');
 const newEventModal = document.getElementById('newEventModal');
@@ -95,7 +128,7 @@ function load() {
   }
 
   const day = dt.getDate();
-  const month = dt.getMonth();
+  let month = dt.getMonth();
   const year = dt.getFullYear();
 
   const firstDayOfMonth = new Date(year, month, 1);
@@ -107,6 +140,13 @@ function load() {
     month: 'numeric',
     day: 'numeric',
   });
+
+  if(month + 1 < 10) {
+    let tempt = month + 1;
+    month = '0' + tempt;
+  }else {
+    month++;
+  }
 
   const paddingDays = weekdays.indexOf(dateString.split(', ')[1]);
 
@@ -123,7 +163,7 @@ function load() {
     if(temptDay < 10) {
         temptDay = '0' + temptDay;
     }
-    const dayString = `${year}-${month + 1}-${temptDay}`;
+    const dayString = `${year}-${month}-${temptDay}`;
 
 
     if (i > paddingDays) {
@@ -163,6 +203,16 @@ function load() {
             }
             
         });
+
+      //set disabled days
+      fetchDataDisabledday()
+      .then(disabledDays => {
+            let isDisabledDay = disabledDays.find(e => e.disabledDay === dayString);
+            if(isDisabledDay) {
+              daySquare.classList.add('dayDisabled');
+            }
+          });
+
       if (i - paddingDays === day && nav === 0) {
         daySquare.id = 'currentDay';
       }
