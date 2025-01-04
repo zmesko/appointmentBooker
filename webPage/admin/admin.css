@@ -68,8 +68,8 @@
   }
 
   .dayDisabled {
-    pointer-events: none;
-    background-color: #908f8f
+    pointer-events: all;
+    background-color: #908f8f;
   }
 
 

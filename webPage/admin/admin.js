@@ -105,8 +105,24 @@ function disabledADay(date) {
     headers: {
       "Content-type": "application/json; charset=UTF-8"
     }
-  });
+  })
+    .then(() => console.log('Disabled successful!'))
+    .catch(error =>  console.error('There was an error!', error));
   closeModal();
+}
+
+function unlockDay(unlockdId){
+  if(confirm('Biztos feloldja a napot?') == true){
+    fetch("http://localhost:8080/api/disabledday/" + unlockdId, {
+      method: "DELETE",
+      headers: {
+      }
+    })
+      .then(() => console.log('Delete successful!'))
+      .catch(error =>  console.error('There was an error!', error));
+
+      closeModal();
+  }
 }
 
 const weekdays = ['hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat', 'vasárnap'];
@@ -260,16 +276,19 @@ function load() {
         daySquare.classList.add('dayDisabled');
       }
 
+      //marking day as currentday
       if (i - paddingDays === day && nav === 0) {
         daySquare.id = 'currentDay';
       }
 
-
-
       daySquare.addEventListener('click', () => {
-        if(localStorage.getItem('buttonDisabledDayClicked') === 'true') {
+        if(localStorage.getItem('buttonDisabledDayClicked') === 'true' && !disabledDays.find(e => e.disabledDay === dayString)) {
           disabledADay(dayString);
-        }else {
+        }else if(localStorage.getItem('buttonDisabledDayClicked') === 'true' && disabledDays.find(e => e.disabledDay === dayString)) {
+          let unlockDayId = disabledDays.find(e => e.disabledDay === dayString).id;
+          console.log(unlockDayId);
+          unlockDay(unlockDayId);
+        }else if(!disabledDays.find(e => e.disabledDay === dayString)){
           openModal(dayString);
         }
       });
