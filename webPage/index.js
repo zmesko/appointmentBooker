@@ -69,7 +69,8 @@ fetchData()
 
 const calendar = document.getElementById('calendar');
 const newEventModal = document.getElementById('newEventModal');
-const backDrop = document.getElementById('modalBackDrop');
+const modalBackDrop = document.getElementById('modalBackDrop');
+modalBackDrop.addEventListener('click', () => closeModal());
 const nameInput = document.getElementById('nameInput');
 const emailInput = document.getElementById('emailInput');
 const weekdays = ['hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat', 'vasárnap'];
@@ -117,7 +118,7 @@ function openModal(date) {
     }
   }
 
-  backDrop.style.display = 'block';
+  modalBackDrop.style.display = 'block';
 }
 
 function load() {
