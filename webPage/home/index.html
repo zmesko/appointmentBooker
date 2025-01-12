@@ -8,21 +8,20 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
-    <title>Appointment booker (admin)</title>
+    <title>Appointment booker</title>
 
-    <link href="admin.css" rel="stylesheet">
+    <link href="index.css" rel="stylesheet">
   </head>
   <body>
 
-    <button id="dayDisabledButton">Napok tiltása/feloldása</button>
-    
+    <button onclick="window.location.href='/login'" id="loginButton">Belépés(admin)</button>
+
     <div id="container">
-      <h1>Admin</h1>
         <div id="header">
           <div id="monthDisplay"></div>
           <div>
-            <button id="backButton">Vissza</button>
-            <button id="nextButton">Előre</button>
+            <button id="backButton">Back</button>
+            <button id="nextButton">Next</button>
           </div>
         </div>
         
@@ -39,20 +38,26 @@
         <div id="calendar"></div>
     </div>
 
-    <div id="newEventModal">
+    <div id="newAppointmentModal">
         <h2>Időpontfoglalás</h2>
   
-        <input id="nameInput" placeholder="Add meg a neved" />
+        <input id="nameInput" placeholder="Add meg a neved" required/>
         <input type="email" id="emailInput" placeholder="Add meg az email címed" required/>
         <div id="buttonsPlace"></div>
   
-        <button id="cancelButton">Kilépés</button>
+        <button id="cancelButton">Cancel</button>
     </div>
   
+    <div id="loginModal">
+      <h2>Admin belépés</h2>
+        <input type="text" id="loginUserName" placeholder="felhasználónév" required><br>
+        <input type="password" id="loginPassword" placeholder="jelszó" required><br><br>
+        <button id="loginSubmit">Bejelentkezés</button>
+    </div>
 
     <div id="modalBackDrop"></div>
 
-    <script src="admin.js"></script>
+    <script src="index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
   </body>

@@ -17,43 +17,8 @@
     color: white;
   }
 
-  #header {
-    padding: 10px;
-    color: #d36c6c;
-    font-size: 26px;
-    font-family: sans-serif;
-    display: flex;
-    justify-content: space-between;
-  }
-  #header button {
-    background-color:#92a1d1;
-  }
-
-  #container {
-    width: 770px;
-  }
-
-  #weekdays {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    color: #247BA0;
-  }
-
-  #weekdays div {
-    width: 100px;
-    padding: 10px;
-    margin: auto;
-  }
-
-  #calendar {
-    width: 100%;
-    margin: auto;
-    display: flex;
-    flex-wrap: wrap;
-  }
-
   .day {
+    position: relative;
     width: 100px;
     padding: 10px;
     height: 100px;
@@ -96,6 +61,18 @@
     margin: 5px;
   }
 
+  .buttonReserved {
+    border: 1px solid #ee2f2f;
+    background-color: #908f8f;
+    color: #666666;
+  }
+
+  .dayDisabled {
+    pointer-events: all;
+    background-color: #908f8f;
+  }
+
+
   .busynessDiv {
     width: 100%;
     background-color: white;
@@ -114,17 +91,44 @@
     background-color: red;
   }
 
-  button:disabled {
-  cursor: default;
-  border: 1px solid #ee2f2f;
-  background-color: #908f8f;
-  color: #666666;
+  #header {
+    padding: 10px;
+    color: #d36c6c;
+    font-size: 26px;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: space-between;
+  }
+  #header button {
+    background-color:#92a1d1;
+    width: 100px;
   }
 
-  .dayDisabled {
-    pointer-events: none;
-    background-color: #908f8f
+  #container {
+    width: 770px;
   }
+
+  #weekdays {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    color: #247BA0;
+  }
+
+  #weekdays div {
+    width: 100px;
+    padding: 10px;
+    margin: auto;
+  }
+
+  #calendar {
+    position: relative;
+    width: 100%;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
 
   #newEventModal, #deleteEventModal {
     display: none;
@@ -171,4 +175,12 @@
   }
   #nameInput.error, #emailInput.error {
     border: 2px solid red;
+  }
+
+  #dayDisabledButton {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: auto;
+    background-color: #92a1d1;
   }

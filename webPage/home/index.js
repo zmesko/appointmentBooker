@@ -4,7 +4,7 @@ let events;
 let disabledDays;
 
 //Get request from server
-function fetchData() { 
+function fetchDataAppointmnet() { 
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         const apiUrl = 'http://localhost:8080/api/appointment';
@@ -31,24 +31,24 @@ function fetchData() {
 }
 
 //get request from server (disabledday)
-fetchData()
+fetchDataAppointmnet()
     .then(events => {
      console.log(events);
      });
 
-     function fetchDataDisabledday() { 
-      return new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          const apiUrl = 'http://localhost:8080/api/disabledday';
-    
-          xhr.open('GET', apiUrl, true);
-    
-          xhr.responseType = 'json';
-    
-          xhr.onload = function() {
-              if (xhr.readyState == 4 && xhr.status == 200) {
-                  resolve(xhr.response);
-                  disabledDays = xhr.response;
+function fetchDataDisabledday() { 
+  return new Promise((resolve, reject) => {
+       const xhr = new XMLHttpRequest();
+       const apiUrl = 'http://localhost:8080/api/disabledday';
+
+      xhr.open('GET', apiUrl, true);
+
+       xhr.responseType = 'json';
+
+       xhr.onload = function() {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+               resolve(xhr.response);
+               disabledDays = xhr.response;
               } else {
                   reject('Request failed with status: ' + xhr.status);
               }
@@ -68,12 +68,53 @@ fetchData()
         });
 
 const calendar = document.getElementById('calendar');
-const newEventModal = document.getElementById('newEventModal');
+const newAppointmentModal = document.getElementById('newAppointmentModal');
+const loginModal = document.getElementById('loginModal');
 const modalBackDrop = document.getElementById('modalBackDrop');
 modalBackDrop.addEventListener('click', () => closeModal());
 const nameInput = document.getElementById('nameInput');
 const emailInput = document.getElementById('emailInput');
 const weekdays = ['hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat', 'vasárnap'];
+
+document.getElementById('loginButton').addEventListener('click', () => {
+                                                          loginModal.style.display = 'block';
+                                                          modalBackDrop.style.display = 'block';
+                                                                        });
+document.getElementById('loginSubmit').addEventListener('click', () => loginAdmin());                                                                      
+
+function loginAdmin() {
+  const username = document.getElementById('loginUserName').value;
+  console.log(username);
+  const password = document.getElementById('loginPassword').value;
+  console.log(password);
+       const headers = new Headers();
+       headers.set('Authorization', 'Basic ' + btoa("admin" + ":" + "admin"));
+        fetch('http://localhost:8080/loginadmin',{ 
+                mode: 'no-cors',
+                credentials: 'include',
+                method: 'POST',
+                body: JSON.stringify({
+                  username: username,
+                  password: password,
+                }),
+                headers: { 
+                  'Content-Type': 'application/json', 'Authorization': 'Basic ' + btoa("admin" + ':' + "admin") 
+                }
+            })
+            .then(response => {
+               if (response.ok) {
+                  console.log("sing in successful");
+                  window.location.href = '../admin/admin.html';
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+               console.log(data);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+}
 
 function openModal(date) {
   clicked = date;
@@ -84,7 +125,7 @@ function openModal(date) {
     document.getElementById('eventText').innerText = eventForDay.title;
     deleteEventModal.style.display = 'block';
   } else {
-    newEventModal.style.display = 'block';
+    newAppointmentModal.style.display = 'block';
 
     let appointment = 8;
     for(let i = 0; i < 19; i++) {
@@ -105,7 +146,7 @@ function openModal(date) {
         }
         
         let appointmentThisTime;
-        fetchData()
+        fetchDataAppointmnet()
         .then(events => {
             appointmentThisTime = events.find(e => e.bookedAppointment === buttonAppointment.id + ":00");
             if (appointmentThisTime) {
@@ -171,7 +212,7 @@ function load() {
 
       daySquare.innerText = i - paddingDays;
 
-      fetchData()
+      fetchDataAppointmnet()
       .then(events => {
             dayBusyness = events.filter(e => e.bookedAppointment.split('T')[0] === dayString);
 
@@ -249,13 +290,14 @@ function load() {
 
 function closeModal() {
   nameInput.classList.remove('error');
-  newEventModal.style.display = 'none';
+  newAppointmentModal.style.display = 'none';
   modalBackDrop.style.display = 'none';
+  loginModal.style.display = 'none';
   nameInput.value = '';
   emailInput.value ='';
   buttonsPlace.innerText = '';
   clicked = null;
-  load();
+  fetchDataAppointmnet().then(load());
 }
 
 function saveEvent(bookedAppointment) {

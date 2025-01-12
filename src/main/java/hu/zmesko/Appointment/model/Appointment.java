@@ -15,7 +15,9 @@ public class Appointment {
     private String mobileNumber;
     private LocalDateTime bookedAppointment;
     private LocalDateTime timeWhenBooked = LocalDateTime.now();
-    private boolean disabledDay;
+
+    public Appointment() {
+    }
 
     public int getId() {
         return id;
@@ -55,14 +57,6 @@ public class Appointment {
 
     public void setBookedAppointment(LocalDateTime bookedAppointment) {
         this.bookedAppointment = bookedAppointment;
-    }
-
-    public boolean isDisabledDay() {
-        return disabledDay;
-    }
-
-    public void setDisabledDay(boolean approval) {
-        this.disabledDay = approval;
     }
 
     public LocalDateTime getTimeWhenBooked() {
