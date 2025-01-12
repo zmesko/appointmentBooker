@@ -1,10 +1,9 @@
 let nav = 0;
-let clicked = null;
 let events;
 let disabledDays;
 
-//get request from server (appointment)
-function fetchData() { 
+//Get request from server
+function fetchDataAppointmnet() { 
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         const apiUrl = 'http://localhost:8080/api/appointment';
@@ -30,113 +29,59 @@ function fetchData() {
     }); 
 }
 
-fetchData()
-    .then(events => {
-     console.log(events);
-     });
+fetchDataAppointmnet()
+.then(events => {
+  console.log(events);
+});
 
 //get request from server (disabledday)
 function fetchDataDisabledday() { 
   return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      const apiUrl = 'http://localhost:8080/api/disabledday';
+       const xhr = new XMLHttpRequest();
+       const apiUrl = 'http://localhost:8080/api/disabledday';
 
       xhr.open('GET', apiUrl, true);
 
-      xhr.responseType = 'json';
+       xhr.responseType = 'json';
 
-      xhr.onload = function() {
+       xhr.onload = function() {
           if (xhr.readyState == 4 && xhr.status == 200) {
-              resolve(xhr.response);
-              disabledDays = xhr.response;
-          } else {
-              reject('Request failed with status: ' + xhr.status);
-          }
-      };
-
-      xhr.onerror = function() {
-          reject('Request failed');
-      };
-
-      xhr.send();
-  }); 
-}
-
-fetchDataDisabledday()
-    .then(disabledDays => {
-     console.log(disabledDays);
-     });
+               resolve(xhr.response);
+               disabledDays = xhr.response;
+              } else {
+                  reject('Request failed with status: ' + xhr.status);
+              }
+          };
+    
+          xhr.onerror = function() {
+              reject('Request failed');
+          };
+    
+          xhr.send();
+      }); 
+    }
+    
+  fetchDataDisabledday()
+      .then(disabledDays => {
+       console.log(disabledDays);
+        });
 
 const calendar = document.getElementById('calendar');
-const newEventModal = document.getElementById('newEventModal');
-
+const newAppointmentModal = document.getElementById('newAppointmentModal');
+const loginModal = document.getElementById('loginModal');
 const modalBackDrop = document.getElementById('modalBackDrop');
 modalBackDrop.addEventListener('click', () => closeModal());
-
 const nameInput = document.getElementById('nameInput');
 const emailInput = document.getElementById('emailInput');
-
-const buttonDisabledDay = document.getElementById('dayDisabledButton');
-
-let isButtonClicked = false;
-buttonDisabledDay.addEventListener('click', () => {
-  if(isButtonClicked === false) {
-    localStorage.setItem('buttonDisabledDayClicked', 'true');
-    disabledDayView();
-    isButtonClicked = true;
-  }else {
-    localStorage.setItem('buttonDisabledDayClicked', 'false');
-    isButtonClicked = false;
-  }
-});
-
-function disabledDayView() {
-  modalBackDrop.style.display = 'block';
-  calendar.style.zIndex = '12';
-}
-
-function disabledADay(date) {
-  fetch("http://localhost:8080/api/disabledday", {
-    method: "POST",
-    body: JSON.stringify({
-        name: "admin",
-        disabledDay: date,
-    }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8"
-    }
-  })
-    .then(() => console.log('Disabled successful!'))
-    .catch(error =>  console.error('There was an error!', error));
-  closeModal();
-}
-
-function unlockDay(unlockdId){
-  if(confirm('Biztos feloldja a napot?') == true){
-    fetch("http://localhost:8080/api/disabledday/" + unlockdId, {
-      method: "DELETE",
-      headers: {
-      }
-    })
-      .then(() => console.log('Delete successful!'))
-      .catch(error =>  console.error('There was an error!', error));
-
-      closeModal();
-  }
-}
-
 const weekdays = ['hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat', 'vasárnap'];
 
+document.getElementById('loginButton').addEventListener('click', () => {
+                                              loginModal.style.display = 'block';
+                                              modalBackDrop.style.display = 'block';
+                                            });
+
 function openModal(date) {
-  clicked = date;
-
-  const eventForDay = events.find(e => e.date === clicked);
-
-  if (eventForDay) {
-    document.getElementById('eventText').innerText = eventForDay.title;
-    deleteEventModal.style.display = 'block';
-  } else {
-    newEventModal.style.display = 'block';
+    newAppointmentModal.style.display = 'block';
 
     let appointment = 8;
     for(let i = 0; i < 19; i++) {
@@ -157,20 +102,17 @@ function openModal(date) {
         }
         
         let appointmentThisTime;
-        fetchData()
+        fetchDataAppointmnet()
         .then(events => {
             appointmentThisTime = events.find(e => e.bookedAppointment === buttonAppointment.id + ":00");
             if (appointmentThisTime) {
-              buttonAppointment.classList.add('buttonReserved');
-              buttonAppointment.addEventListener('click', () => deleteEvent(buttonAppointment.id));
-            }else {
-              buttonAppointment.addEventListener('click', () => saveEvent(buttonAppointment.id));
+              buttonAppointment.disabled = true;
             }
         });
 
+        buttonAppointment.addEventListener('click', () => saveEvent(buttonAppointment.id));
         buttonsPlace.appendChild(buttonAppointment);
     }
-  }
 
   modalBackDrop.style.display = 'block';
 }
@@ -185,6 +127,7 @@ function load() {
   const day = dt.getDate();
   let month = dt.getMonth();
   const year = dt.getFullYear();
+
   const firstDayOfMonth = new Date(year, month, 1);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   
@@ -217,7 +160,6 @@ function load() {
     if(temptDay < 10) {
         temptDay = '0' + temptDay;
     }
- 
     const dayString = `${year}-${month}-${temptDay}`;
 
 
@@ -225,11 +167,10 @@ function load() {
 
       daySquare.innerText = i - paddingDays;
 
-      fetchData()
+      fetchDataAppointmnet()
       .then(events => {
             dayBusyness = events.filter(e => e.bookedAppointment.split('T')[0] === dayString);
 
-            //number the appointments
             let positionInLine = [];
             for(let i = 0; i < dayBusyness.length; i++) {
               let position = dayBusyness[i].bookedAppointment.split('T')[1].split(':')[0];
@@ -240,7 +181,7 @@ function load() {
             }
 
 
-            //show the busyness in a day
+
             let busynessDiv = document.createElement('div');
             busynessDiv.classList.add('busynessDiv');
             daySquare.appendChild(busynessDiv);
@@ -259,7 +200,7 @@ function load() {
             }
             
         });
-      
+
       //set disabled days
       fetchDataDisabledday()
       .then(disabledDays => {
@@ -268,7 +209,7 @@ function load() {
               daySquare.classList.add('dayDisabled');
             }
           });
-      
+
       //set previous days disabled
       let currentDate = new Date();
       let thisDate = new Date(dayString);
@@ -276,56 +217,41 @@ function load() {
         daySquare.classList.add('dayDisabled');
       }
 
-      //marking day as currentday
       if (i - paddingDays === day && nav === 0) {
         daySquare.id = 'currentDay';
       }
 
-      daySquare.addEventListener('click', () => {
-        if(localStorage.getItem('buttonDisabledDayClicked') === 'true' && !disabledDays.find(e => e.disabledDay === dayString)) {
-          disabledADay(dayString);
-        }else if(localStorage.getItem('buttonDisabledDayClicked') === 'true' && disabledDays.find(e => e.disabledDay === dayString)) {
-          let unlockDayId = disabledDays.find(e => e.disabledDay === dayString).id;
-          console.log(unlockDayId);
-          unlockDay(unlockDayId);
-        }else if(!disabledDays.find(e => e.disabledDay === dayString)){
-          openModal(dayString);
-        }
-      });
+      daySquare.addEventListener('click', () => openModal(dayString));
 
-      //disabled all sunday
-      dayStringToDate = new Date(dayString);
-      let checkSunday = dayStringToDate.toLocaleDateString('hu', {
+        dayStringToDate = new Date(dayString);
+        let checkSunday = dayStringToDate.toLocaleDateString('hu', {
         weekday: 'long',
         year: 'numeric',
         month: 'numeric',
         day: 'numeric',
-      });
-      
+        });
+
         if(checkSunday.split(', ')[1] === "vasárnap") {
           daySquare.classList.add('dayDisabled');
         }
         
-
     } else {
       daySquare.classList.add('padding');
     }
-    calendar.appendChild(daySquare);
+
+    calendar.appendChild(daySquare);    
   }
 }
 
 function closeModal() {
   nameInput.classList.remove('error');
-  newEventModal.style.display = 'none';
+  newAppointmentModal.style.display = 'none';
   modalBackDrop.style.display = 'none';
+  loginModal.style.display = 'none';
   nameInput.value = '';
   emailInput.value ='';
   buttonsPlace.innerText = '';
-  clicked = null;
-  calendar.style.zIndex = '0';
-  isButtonClicked = false;
-  localStorage.setItem('buttonDisabledDayClicked', 'false');
-  fetchData().then(load());
+  fetchDataAppointmnet().then(load());
 }
 
 function saveEvent(bookedAppointment) {
@@ -339,7 +265,6 @@ function saveEvent(bookedAppointment) {
             email: emailInput.value,
             mobileNumber: null,
             bookedAppointment: bookedAppointment,
-            disabledDay: false
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
@@ -350,38 +275,6 @@ function saveEvent(bookedAppointment) {
   } else {
     nameInput.classList.add('error');
   }
-}
-
-function deleteEvent(bookedAppointment) {
-
-  let bookedRecord;
-  fetchData()
-    .then(events => {
-      bookedRecord = events.find(e => e.bookedAppointment === bookedAppointment + ":00");
-      console.log(bookedRecord.id);
-
-    if(confirm("Biztos törölni szeretné?") == true) {
-        fetch("http://localhost:8080/api/appointment/" + bookedRecord.id, {
-            method: "DELETE",
-            headers: {
-              "Content-type": "application/json; charset=UTF-8"
-            }
-          })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response;
-            })
-            .then(data => {
-                console.log('Resource deleted successfully:', data);
-            })
-            .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
-            });
-            closeModal();
-    }
-  });
 }
 
 function initButtons() {

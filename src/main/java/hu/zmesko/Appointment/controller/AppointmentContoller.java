@@ -40,7 +40,7 @@ public class AppointmentContoller {
                     id = repository.findLastId().getId() + 1;
                 }
         };
-    };
+    }
 
     @GetMapping("")
     public List<Appointment> findAll() {
