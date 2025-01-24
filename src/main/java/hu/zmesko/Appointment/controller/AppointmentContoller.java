@@ -3,8 +3,6 @@ package hu.zmesko.Appointment.controller;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,14 +22,13 @@ import hu.zmesko.Appointment.repository.RepositoryInterface;
 public class AppointmentContoller {
 
     private final RepositoryInterface repository;
-    private Integer id;
 
     public AppointmentContoller(RepositoryInterface repository) {
         this.repository = repository;
     }
 
     //Get last id
-    @Bean
+    /*@Bean
     CommandLineRunner commandLineRunner(){
         return args ->{
                 if (repository.findLastId() == null) {
@@ -40,7 +37,7 @@ public class AppointmentContoller {
                     id = repository.findLastId().getId() + 1;
                 }
         };
-    }
+    }*/
 
     @GetMapping("")
     public List<Appointment> findAll() {
@@ -55,9 +52,7 @@ public class AppointmentContoller {
 
     @PostMapping("")
     public void addApointment(@RequestBody Appointment appointment) {
-        appointment.setId(id);
         repository.save(appointment);
-        id++;
     }
 
     @PutMapping("/{id}")
