@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,22 +43,22 @@ public class SecurityConfig {
     }
 
     // add new user
-    /*
-     * @Bean
-     * UserDetails anotherUser(PasswordEncoder encoder) {
-     * UserDetails user = User
-     * .withUsername("user")
-     * .password(encoder.encode("user"))
-     * .roles("USER")
-     * .build();
-     * return user;
-     * }
-     */
+    
+     /*@Bean
+     UserDetails admin_user(PasswordEncoder encoder) {
+        UserDetails user = User
+            .withUsername("admin")
+            .password(encoder.encode("admin"))
+            .roles("ADMIN")
+            .build();
+        return user;
+     }*/
+     
 
     @Bean
-    UserDetailsService userDetailsService() {
+    UserDetailsService userDetailsService(PasswordEncoder encoder) {
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        // jdbcUserDetailsManager.createUser(anotheruser);
+        //jdbcUserDetailsManager.createUser(user);
         return jdbcUserDetailsManager;
     }
 

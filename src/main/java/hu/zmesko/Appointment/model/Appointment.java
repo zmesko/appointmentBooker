@@ -3,12 +3,17 @@ package hu.zmesko.Appointment.model;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 
 @Entity
 public class Appointment {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "appointment_seq")
+    @SequenceGenerator(name = "appointment_seq", sequenceName = "appointment_seq", allocationSize = 1)
     private Integer id;
     private String name;
     private String email;
