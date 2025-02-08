@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import static org.springframework.security.config.Customizer.withDefaults;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -16,10 +17,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import hu.zmesko.Appointment.repository.UsersRepository;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private UsersRepository usersRepository;
 
     @Autowired
     private final DataSource dataSource;
@@ -43,23 +48,22 @@ public class SecurityConfig {
     }
 
     // add new user
-    
-     /*@Bean
-     UserDetails admin_user(PasswordEncoder encoder) {
-        UserDetails user = User
-            .withUsername("admin")
-            .password(encoder.encode("admin"))
-            .roles("ADMIN")
-            .build();
-        return user;
-     }*/
-     
-
     @Bean
-    UserDetailsService userDetailsService(PasswordEncoder encoder) {
+    UserDetailsService createUser(PasswordEncoder encoder) {
+
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        //jdbcUserDetailsManager.createUser(user);
+
+        if (usersRepository.findByUsername("admin") == null) {
+            UserDetails userAdmin = User
+                    .withUsername("admin")
+                    .password(encoder.encode("admin"))
+                    .roles("ADMIN")
+                    .build();
+            jdbcUserDetailsManager.createUser(userAdmin);
+        }
+
         return jdbcUserDetailsManager;
+
     }
 
     @Bean
