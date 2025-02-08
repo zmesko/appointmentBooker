@@ -14,30 +14,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import hu.zmesko.Appointment.model.Appointment;
-import hu.zmesko.Appointment.repository.RepositoryInterface;
+import hu.zmesko.Appointment.repository.AppointmentRepository;
 
 @RestController
 @RequestMapping("/api/appointment")
 @CrossOrigin
 public class AppointmentContoller {
 
-    private final RepositoryInterface repository;
+    private final AppointmentRepository repository;
 
-    public AppointmentContoller(RepositoryInterface repository) {
+    public AppointmentContoller(AppointmentRepository repository) {
         this.repository = repository;
     }
-
-    //Get last id
-    /*@Bean
-    CommandLineRunner commandLineRunner(){
-        return args ->{
-                if (repository.findLastId() == null) {
-                    id = 1;
-                }else {
-                    id = repository.findLastId().getId() + 1;
-                }
-        };
-    }*/
 
     @GetMapping("")
     public List<Appointment> findAll() {

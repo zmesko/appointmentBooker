@@ -7,7 +7,7 @@ import org.springframework.data.repository.ListCrudRepository;
 
 import hu.zmesko.Appointment.model.Appointment;
 
-public interface RepositoryInterface extends ListCrudRepository<Appointment, Integer>{
+public interface AppointmentRepository extends ListCrudRepository<Appointment, Integer>{
 
     List<Appointment> findAllByNameContains(String name);
 
